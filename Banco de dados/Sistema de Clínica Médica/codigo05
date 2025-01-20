@@ -1,0 +1,83 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS,
+FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE,
+SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_
+DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBS
+TITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+USE `mydb` ;
+-- -----------------------------------------------------
+-- Table `mydb`.`Consulta`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Consulta` (
+`CPF_paciente` INT NOT NULL,
+`nome_paciente` VARCHAR(45) NOT NULL,
+`medicoResponsavel` VARCHAR(45) NOT NULL,
+`dia_hora` REAL NOT NULL,
+`resumoAtendimento` VARCHAR(200) NULL,
+PRIMARY KEY (`nome_paciente`))
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Paciente`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Paciente` (
+`CPF` INT NOT NULL,
+`nome` VARCHAR(45) NOT NULL,
+`data_nacimento` INT NOT NULL,
+`historico_medico` VARCHAR(45) NOT NULL,
+`Consulta_nome_paciente` VARCHAR(45) NOT NULL,
+PRIMARY KEY (`CPF`, `Consulta_nome_paciente`),
+INDEX `fk_Paciente_Consulta_idx` (`Consulta_nome_paciente` ASC) VISIBLE,
+CONSTRAINT `fk_Paciente_Consulta`
+FOREIGN KEY (`Consulta_nome_paciente`)
+REFERENCES `mydb`.`Consulta` (`nome_paciente`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+
+-- Table `mydb`.`Medico`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Medico` (
+`CRM` INT NOT NULL,
+`nome` VARCHAR(45) NOT NULL,
+`especialidade` VARCHAR(45) NOT NULL,
+PRIMARY KEY (`CRM`))
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Consulta_has_Medico`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Consulta_has_Medico` (
+`Consulta_nome_paciente` VARCHAR(45) NOT NULL,
+`Medico_CRM` INT NOT NULL,
+PRIMARY KEY (`Consulta_nome_paciente`, `Medico_CRM`),
+INDEX `fk_Consulta_has_Medico_Medico1_idx` (`Medico_CRM` ASC) VISIBLE,
+INDEX `fk_Consulta_has_Medico_Consulta1_idx` (`Consulta_nome_paciente`
+ASC) VISIBLE,
+CONSTRAINT `fk_Consulta_has_Medico_Consulta1`
+FOREIGN KEY (`Consulta_nome_paciente`)
+REFERENCES `mydb`.`Consulta` (`nome_paciente`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION,
+CONSTRAINT `fk_Consulta_has_Medico_Medico1`
+FOREIGN KEY (`Medico_CRM`)
+REFERENCES `mydb`.`Medico` (`CRM`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
